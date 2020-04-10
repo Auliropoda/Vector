@@ -264,14 +264,26 @@ void MyVector::shrink_fit()
 {
     float load_factor = this->loadFactor();
 
-    if ( load_factor < 0.5f)
+    if ( load_factor < 0.25f)
     {
-        _capacity = _size;
+        if(_ResizeStrategy == ResizeStrategy::Multiplicative)
+        {
+        _capacity = _size * _coef;
 
         ValueType *temp = this->_data;
         _data = new ValueType[_capacity];
         memcpy(this->_data, temp, _size * sizeof(ValueType));
         delete[] temp;
+        }
+        else
+        {
+        _capacity = _size + 2;
+
+        ValueType *temp = this->_data;
+        _data = new ValueType[_capacity];
+        memcpy(this->_data, temp, _size * sizeof(ValueType));
+        delete[] temp;
+        }
     }
 }
 
